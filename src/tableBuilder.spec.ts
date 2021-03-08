@@ -5,7 +5,7 @@ it('Should create an increment with correct props', () => {
 
     builder.increments('id').primary()
 
-    const columnDefinitions = builder.getColumnDefinitions()
+    const columnDefinitions = builder.getColumns()
 
     expect(columnDefinitions).toHaveLength(1)
 

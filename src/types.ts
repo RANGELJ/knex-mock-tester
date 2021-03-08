@@ -1,8 +1,9 @@
 export enum TableColumnType {
-    INCREMENTS
+    INCREMENTS,
+    STRING,
 }
 
-type TableColumnBase = {
+export type TableColumnBase = {
     name: string;
     primary: boolean;
     notNullable: boolean;
@@ -13,7 +14,14 @@ export type TableColumnIncrements = TableColumnBase & {
     type: TableColumnType.INCREMENTS;
 }
 
-export type TableColumn = TableColumnIncrements
+export type TableColumnString = TableColumnBase & {
+    type: TableColumnType.STRING;
+    length: number;
+}
+
+export type TableColumn =
+    TableColumnIncrements
+    | TableColumnString
 
 export type TableColumnBuilder = {
     primary: () => TableColumnBuilder;
@@ -22,6 +30,16 @@ export type TableColumnBuilder = {
 
 export type TableBuilder = {
     increments: (name: string) => TableColumnBuilder;
+    string: (name: string, length: number) => TableColumnBuilder;
 
-    getColumnDefinitions: () => TableColumn[];
+    getColumns: () => TableColumn[];
+}
+
+export type Table = {
+    columns: TableColumn[];
+}
+
+export type DbSchema = {
+    tables: Record<string, Table>;
+    createTable: (name: string, buildFunction: (builder: TableBuilder) => void) => void;
 }
