@@ -43,3 +43,19 @@ export type DbSchema = {
     tables: Record<string, Table>;
     createTable: (name: string, buildFunction: (builder: TableBuilder) => void) => void;
 }
+
+type TableData = Record<string, unknown>[]
+
+export type DbData = Record<string, TableData>
+
+type InsertInstruction = (data: Record<string, unknown> | Record<string, unknown>[]) => void;
+
+type GenericQuery = {
+    insert: InsertInstruction;
+}
+
+export type KnexMock = {
+    (tableName: string): GenericQuery;
+    dbData: DbData;
+    schema: DbSchema;
+}
