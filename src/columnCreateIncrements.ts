@@ -6,7 +6,9 @@ import {
 const columnCreateIncrements = (name: string): TableColumnIncrements => ({
     type: TableColumnType.INCREMENTS,
     name,
-    isPrimary: false,
+    primary: false,
+    notNullable: false,
+    unique: false,
 })
 
 export default columnCreateIncrements

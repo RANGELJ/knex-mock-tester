@@ -4,7 +4,9 @@ export enum TableColumnType {
 
 type TableColumnBase = {
     name: string;
-    isPrimary: boolean;
+    primary: boolean;
+    notNullable: boolean;
+    unique: boolean;
 }
 
 export type TableColumnIncrements = TableColumnBase & {
@@ -15,4 +17,5 @@ export type TableColumn = TableColumnIncrements
 
 export type TableColumnBuilder = {
     primary: () => TableColumnBuilder;
+    notNullable: () => TableColumnBuilder;
 }

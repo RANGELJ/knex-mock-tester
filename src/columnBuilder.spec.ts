@@ -18,3 +18,21 @@ it('Should chain calls to primary function', () => {
 
     expect(builder === chained).toBe(true)
 })
+
+it('Should set notNullable flag on column', () => {
+    const column = columnCreateIncrements('col1')
+    columnBuilder(column).notNullable()
+
+    expect(column).toStrictEqual({
+        ...column,
+        notNullable: true,
+    })
+})
+
+it('Should chain notNullable function', () => {
+    const column = columnCreateIncrements('col1')
+    const builder = columnBuilder(column)
+    const chained = builder.notNullable()
+
+    expect(builder === chained).toBe(true)
+})

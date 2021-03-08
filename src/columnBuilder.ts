@@ -6,10 +6,17 @@ import {
 const columnBuilder = (column: TableColumn): TableColumnBuilder => {
     const builder = {
         primary: () => {
-            column.isPrimary = true
-
+            column.primary = true
             return builder
         },
+        notNullable: () => {
+            column.notNullable = true
+            return builder
+        },
+        unique: () => {
+            column.unique = true
+            return builder
+        }
     }
 
     return builder
