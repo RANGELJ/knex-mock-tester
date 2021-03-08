@@ -7,7 +7,7 @@ it('Should alter primary flag when primary function is called', () => {
 
     expect(column).toStrictEqual({
         ...column,
-        isPrimary: true,
+        primary: true,
     })
 })
 

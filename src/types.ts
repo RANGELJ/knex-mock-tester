@@ -19,3 +19,9 @@ export type TableColumnBuilder = {
     primary: () => TableColumnBuilder;
     notNullable: () => TableColumnBuilder;
 }
+
+export type TableBuilder = {
+    increments: (name: string) => TableColumnBuilder;
+
+    getColumnDefinitions: () => TableColumn[];
+}
