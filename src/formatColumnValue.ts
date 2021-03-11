@@ -10,14 +10,20 @@ const formatColumnValue = ({
     column,
     value,
 }: Args) => {
-    if (valueIsUndefined(value)) {
-        return value
-    }
-
     switch (column.type) {
     case TableColumnType.STRING: {
+        if (valueIsUndefined(value)) {
+            return value
+        }
+
         const formatedValue = `${value}`.slice(0, column.length)
         return formatedValue
+    }
+    case TableColumnType.INCREMENTS: {
+        if (valueIsUndefined(value)) {
+            return 1
+        }
+        return value
     }
     default:
         return value

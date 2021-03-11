@@ -87,3 +87,23 @@ it('When a column is primary is implicid that is not nullable and unique', () =>
         knex('users').insert({ id: 'a' })
     }).toThrowError()
 })
+
+// Basing auto increment on doc from mysql:
+// https://dev.mysql.com/doc/refman/8.0/en/example-auto-increment.html
+it('An auto increment auto inserts a 1 when no value is passed on first row', () => {
+    const knex = knexCreate()
+
+    knex.schema.createTable('users', (table) => {
+        table.increments('id')
+        table.string('name', 40)
+    })
+
+    knex('users').insert({ name: 'Jorge' })
+
+    const usersData = knex.dbData.users
+
+    expect(usersData).toStrictEqual([{
+        id: 1,
+        name: 'Jorge',
+    }])
+})

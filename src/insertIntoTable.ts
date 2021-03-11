@@ -29,12 +29,13 @@ const insertIntoTable = ({
         table.columns.forEach((column) => {
             const propValue = record[column.name]
 
-            const validatedValue = formatColumnValue({
+            const formatedValue = formatColumnValue({
                 column,
                 value: propValue,
             })
+            console.log('formatedValue', formatedValue)
 
-            if (valueIsUndefined(validatedValue)) {
+            if (valueIsUndefined(formatedValue)) {
                 if (column.notNullable || column.primary) {
                     throw new Error(`Column [${column.name}] is not nullable, a value must be supplied`)
                 }
@@ -43,14 +44,14 @@ const insertIntoTable = ({
 
             if (column.primary) {
                 const matchedRow = dbData[tableName]
-                    .find((row) => row[column.name] === validatedValue)
+                    .find((row) => row[column.name] === formatedValue)
 
                 if (matchedRow) {
                     throw new Error(`Column [${column.name}] should be unique, DUP found`)
                 }
             }
 
-            actualRow[column.name] = validatedValue
+            actualRow[column.name] = formatedValue
         })
 
         dbData[tableName].push(actualRow)
