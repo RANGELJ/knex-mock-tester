@@ -56,3 +56,34 @@ it('Should crop largen than stated string, (just like aurora or mysql do by defa
     const usersData = knex.dbData.users
     expect(usersData[0].name).toBe('12345')
 })
+
+it('Should fail with notNullable constraint is violated', () => {
+    const knex = knexCreate()
+
+    knex.schema.createTable('users', (table) => {
+        table.string('name', 10).notNullable()
+        table.string('secondname', 10)
+    })
+
+    expect(() => {
+        knex('users').insert({ secondname: 'Margareth' })
+    }).toThrowError()
+})
+
+it('When a column is primary is implicid that is not nullable and unique', () => {
+    const knex = knexCreate()
+
+    knex.schema.createTable('users', (table) => {
+        table.string('id', 10).primary()
+    })
+
+    expect(() => {
+        knex('users').insert({ hi: 124 })
+    }).toThrowError()
+
+    knex('users').insert({ id: 'a' })
+
+    expect(() => {
+        knex('users').insert({ id: 'a' })
+    }).toThrowError()
+})
