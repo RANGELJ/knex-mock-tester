@@ -43,3 +43,16 @@ it('Insert multiple rows on table', () => {
     expect(usersData[0]).toStrictEqual({ name: 'Hello' })
     expect(usersData[1]).toStrictEqual({ name: 'world' })
 })
+
+it('Should crop largen than stated string, (just like aurora or mysql do by default)', () => {
+    const knex = knexCreate()
+
+    knex.schema.createTable('users', (table) => {
+        table.string('name', 5)
+    })
+
+    knex('users').insert({ name: '123456' })
+
+    const usersData = knex.dbData.users
+    expect(usersData[0].name).toBe('12345')
+})

@@ -48,7 +48,7 @@ type TableData = Record<string, unknown>[]
 
 export type DbData = Record<string, TableData>
 
-type InsertInstruction = (data: Record<string, unknown> | Record<string, unknown>[]) => void;
+export type InsertInstruction = (data: Record<string, unknown> | Record<string, unknown>[]) => void;
 
 type GenericQuery = {
     insert: InsertInstruction;
