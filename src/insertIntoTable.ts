@@ -26,13 +26,19 @@ const insertIntoTable = ({
     const insertIndividualRecord = (record: Record<string, unknown>) => {
         const actualRow: Record<string, unknown> = {}
 
+        let rowId: unknown
+
         table.columns.forEach((column) => {
             const propValue = record[column.name]
 
             const formatedValue = formatColumnValue({
                 column,
                 value: propValue,
+                tableData: dbData[tableName],
             })
+
+            const getMatchedRow = () => dbData[tableName]
+                .find((row) => row[column.name] === formatedValue)
 
             if (valueIsUndefined(formatedValue)) {
                 if (column.notNullable || column.primary) {
@@ -42,11 +48,17 @@ const insertIntoTable = ({
             }
 
             if (column.primary) {
-                const matchedRow = dbData[tableName]
-                    .find((row) => row[column.name] === formatedValue)
-
+                const matchedRow = getMatchedRow()
                 if (matchedRow) {
-                    throw new Error(`Column [${column.name}] should be unique, DUP found`)
+                    throw new Error(`Column [${column.name}]: ${formatedValue} should be unique`)
+                }
+                rowId = formatedValue
+            }
+
+            if (column.unique) {
+                const matchedRow = getMatchedRow()
+                if (matchedRow) {
+                    throw new Error(`Column [${column.name}]: ${formatedValue} should be unique`)
                 }
             }
 
@@ -54,14 +66,15 @@ const insertIntoTable = ({
         })
 
         dbData[tableName].push(actualRow)
+
+        return rowId
     }
 
     if (Array.isArray(newRecord)) {
-        newRecord.forEach((childRecord) => {
-            insertIndividualRecord(childRecord)
-        })
+        return newRecord.map((childRecord) => insertIndividualRecord(childRecord))
     } else {
-        insertIndividualRecord(newRecord)
+        const rowId = insertIndividualRecord(newRecord)
+        return [rowId]
     }
 }
 

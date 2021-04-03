@@ -1,16 +1,17 @@
 import valueIsInteger from './typeAssertions/valueIsInteger'
-import valueIsNumber from './typeAssertions/valueIsNumber'
 import { TableColumn, TableColumnType } from './types'
 import valueIsUndefined from './valueIsUnefined'
 
 type Args = {
     column: TableColumn;
     value: unknown;
+    tableData: Record<string, unknown>[];
 }
 
 const formatColumnValue = ({
     column,
     value,
+    tableData,
 }: Args) => {
     switch (column.type) {
     case TableColumnType.STRING: {
@@ -22,10 +23,18 @@ const formatColumnValue = ({
         return formatedValue
     }
     case TableColumnType.INCREMENTS: {
-        if (valueIsUndefined(value)) {
-            return 1
-        }
-        return value
+        let largestRow = 0
+        tableData.forEach((rowData) => {
+            const columnData = rowData[column.name]
+            if (!valueIsInteger(columnData)) {
+                return
+            }
+            if (largestRow >= columnData) {
+                return
+            }
+            largestRow = columnData
+        })
+        return largestRow + 1
     }
     case TableColumnType.INTEGER: {
         if (valueIsUndefined(value)) {

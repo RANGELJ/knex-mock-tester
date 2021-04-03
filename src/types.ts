@@ -59,7 +59,7 @@ export type DbData = Record<string, TableData>
 
 export type InsertInstruction = (
     data: Record<string, unknown> | Record<string, unknown>[]
-) => Promise<number[]>;
+) => Promise<unknown[]>;
 
 type GenericQuery = {
     insert: InsertInstruction;

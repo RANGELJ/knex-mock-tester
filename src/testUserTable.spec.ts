@@ -43,3 +43,21 @@ it('Should not allow values that are not integers on integer columns', async () 
     }).catch(catcher)
     expect(catcher.mock.calls).toHaveLength(1)
 })
+
+it('Should return the auto incremented id when inserting', async () => {
+    const knex = await buildTestKnex()
+
+    const [userId] = await knex('users').insert({
+        name: 'Jorge',
+        createdAt: 10,
+        updatedAt: 10,
+    })
+    expect(userId).toBe(1)
+
+    const [secondUserId] = await knex('users').insert({
+        name: 'Margareth',
+        createdAt: 10,
+        updatedAt: 10,
+    })
+    expect(secondUserId).toBe(2)
+})
