@@ -1,12 +1,15 @@
 import knexCreate from './knexCreate'
 
-it('Insert fails with invalid table name', () => {
+it('Insert fails with invalid table name', async () => {
     const knex = knexCreate()
 
-    expect(() => {
-        knex('users')
-            .insert({ name: 'Hello' })
-    }).toThrowError()
+    const catcher = jest.fn()
+
+    await knex('users')
+        .insert({ name: 'Hello' })
+        .catch(catcher)
+
+    expect(catcher.mock.calls).toHaveLength(1)
 })
 
 it('Insert single record', () => {
@@ -57,7 +60,7 @@ it('Should crop largen than stated string, (just like aurora or mysql do by defa
     expect(usersData[0].name).toBe('12345')
 })
 
-it('Should fail with notNullable constraint is violated', () => {
+it('Should fail with notNullable constraint is violated', async () => {
     const knex = knexCreate()
 
     knex.schema.createTable('users', (table) => {
@@ -65,27 +68,35 @@ it('Should fail with notNullable constraint is violated', () => {
         table.string('secondname', 10)
     })
 
-    expect(() => {
-        knex('users').insert({ secondname: 'Margareth' })
-    }).toThrowError()
+    const catcher = jest.fn()
+
+    await knex('users')
+        .insert({ secondname: 'Margareth' })
+        .catch(catcher)
+
+    expect(catcher.mock.calls).toHaveLength(1)
 })
 
-it('When a column is primary is implicid that is not nullable and unique', () => {
+it('When a column is primary is implicid that is not nullable and unique', async () => {
     const knex = knexCreate()
 
-    knex.schema.createTable('users', (table) => {
+    await knex.schema.createTable('users', (table) => {
         table.string('id', 10).primary()
     })
 
-    expect(() => {
-        knex('users').insert({ hi: 124 })
-    }).toThrowError()
+    const catcher = jest.fn()
 
-    knex('users').insert({ id: 'a' })
+    await knex('users').insert({ hi: 124 })
+        .catch(catcher)
 
-    expect(() => {
-        knex('users').insert({ id: 'a' })
-    }).toThrowError()
+    expect(catcher.mock.calls).toHaveLength(1)
+
+    await knex('users').insert({ id: 'a' })
+
+    await knex('users').insert({ id: 'a' })
+        .catch(catcher)
+
+    expect(catcher.mock.calls).toHaveLength(2)
 })
 
 // Basing auto increment on doc from mysql:

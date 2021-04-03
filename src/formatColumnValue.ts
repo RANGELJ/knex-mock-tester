@@ -1,3 +1,5 @@
+import valueIsInteger from './typeAssertions/valueIsInteger'
+import valueIsNumber from './typeAssertions/valueIsNumber'
 import { TableColumn, TableColumnType } from './types'
 import valueIsUndefined from './valueIsUnefined'
 
@@ -22,6 +24,15 @@ const formatColumnValue = ({
     case TableColumnType.INCREMENTS: {
         if (valueIsUndefined(value)) {
             return 1
+        }
+        return value
+    }
+    case TableColumnType.INTEGER: {
+        if (valueIsUndefined(value)) {
+            return value
+        }
+        if (!valueIsInteger(value)) {
+            throw new Error(`Invalid value ${value} for an integer`)
         }
         return value
     }

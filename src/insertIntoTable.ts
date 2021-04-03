@@ -12,7 +12,7 @@ const insertIntoTable = ({
     schema,
     tableName,
     dbData,
-}: Args): InsertInstruction => (newRecord) => {
+}: Args): InsertInstruction => async (newRecord) => {
     const table = schema.tables[tableName]
 
     if (!table) {
@@ -33,7 +33,6 @@ const insertIntoTable = ({
                 column,
                 value: propValue,
             })
-            console.log('formatedValue', formatedValue)
 
             if (valueIsUndefined(formatedValue)) {
                 if (column.notNullable || column.primary) {

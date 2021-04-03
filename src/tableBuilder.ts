@@ -1,7 +1,11 @@
 import columnBuilder from './columnBuilder'
 import columnCreateIncrements from './columnCreateIncrements'
+import columnCreateInteger from './columnCreateInteger'
 import columnCreateString from './columnCreateString'
-import { TableBuilder, TableColumn } from './types'
+import {
+    TableBuilder,
+    TableColumn,
+} from './types'
 
 const tableBuilder = (): TableBuilder => {
     const columns: TableColumn[] = []
@@ -17,6 +21,12 @@ const tableBuilder = (): TableBuilder => {
             columns.push(column)
             return columnBuilder(column)
         },
+        integer: (name, length) => {
+            const column = columnCreateInteger(name, length)
+            columns.push(column)
+            return columnBuilder(column)
+        },
+
         getColumns: () => columns,
     }
 

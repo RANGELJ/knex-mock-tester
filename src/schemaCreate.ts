@@ -6,7 +6,7 @@ const schemaCreate = (): DbSchema => {
 
     const schema: DbSchema = {
         tables,
-        createTable: (name, buildColumns) => {
+        createTable: async (name, buildColumns) => {
             if (tables[name]) {
                 throw new Error(`The table with name [${name}] already exist`)
             }

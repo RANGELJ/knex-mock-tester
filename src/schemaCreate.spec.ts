@@ -10,18 +10,20 @@ it('Should add the table to record of tables', () => {
     expect(schema.tables.users).not.toBeUndefined()
 })
 
-it('Should fail when the table already exist', () => {
+it('Should fail when the table already exist', async () => {
     const schema = schemaCreate()
 
-    schema.createTable('users', (table) => {
+    await schema.createTable('users', (table) => {
         table.increments('id').primary()
     })
 
-    expect(() => {
-        schema.createTable('users', (table) => {
-            table.increments('id').primary()
-        })
-    }).toThrowError()
+    const catcher = jest.fn()
+
+    await schema.createTable('users', (table) => {
+        table.increments('id').primary()
+    }).catch(catcher)
+
+    expect(catcher.mock.calls).toHaveLength(1)
 })
 
 it('Should add column when builder calls the method to do so', () => {

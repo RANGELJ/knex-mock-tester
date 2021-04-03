@@ -1,6 +1,7 @@
 export enum TableColumnType {
     INCREMENTS,
     STRING,
+    INTEGER,
 }
 
 export type TableColumnBase = {
@@ -19,18 +20,26 @@ export type TableColumnString = TableColumnBase & {
     length: number;
 }
 
+export type TableColumnInteger = TableColumnBase & {
+    type: TableColumnType.INTEGER;
+    length: number;
+}
+
 export type TableColumn =
     TableColumnIncrements
     | TableColumnString
+    | TableColumnInteger
 
 export type TableColumnBuilder = {
     primary: () => TableColumnBuilder;
     notNullable: () => TableColumnBuilder;
+    unique: () => TableColumnBuilder;
 }
 
 export type TableBuilder = {
     increments: (name: string) => TableColumnBuilder;
     string: (name: string, length: number) => TableColumnBuilder;
+    integer: (name: string, length: number) => TableColumnBuilder;
 
     getColumns: () => TableColumn[];
 }
@@ -41,14 +50,16 @@ export type Table = {
 
 export type DbSchema = {
     tables: Record<string, Table>;
-    createTable: (name: string, buildFunction: (builder: TableBuilder) => void) => void;
+    createTable: (name: string, buildFunction: (builder: TableBuilder) => void) => Promise<void>;
 }
 
 type TableData = Record<string, unknown>[]
 
 export type DbData = Record<string, TableData>
 
-export type InsertInstruction = (data: Record<string, unknown> | Record<string, unknown>[]) => void;
+export type InsertInstruction = (
+    data: Record<string, unknown> | Record<string, unknown>[]
+) => Promise<number[]>;
 
 type GenericQuery = {
     insert: InsertInstruction;
