@@ -1,43 +1,33 @@
-import { DbSchema, DbData, InsertInstruction } from './types'
+import { DbSchema, DbData, InsertInstruction, Table } from './types'
 import formatColumnValue from './formatColumnValue'
 import valueIsUndefined from './valueIsUnefined'
 
 type Args = {
-    schema: DbSchema;
-    tableName: string;
-    dbData: DbData;
+    tableDef: Table;
+    tableData: Record<string, unknown>[];
+    newRecord: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const insertIntoTable = ({
-    schema,
-    tableName,
-    dbData,
-}: Args): InsertInstruction => async (newRecord) => {
-    const table = schema.tables[tableName]
-
-    if (!table) {
-        throw new Error(`Table does not exist: [${tableName}]`)
-    }
-
-    if (!dbData[tableName]) {
-        dbData[tableName] = []
-    }
-
+    tableDef,
+    tableData,
+    newRecord,
+}: Args) => {
     const insertIndividualRecord = (record: Record<string, unknown>) => {
         const actualRow: Record<string, unknown> = {}
 
         let rowId: unknown
 
-        table.columns.forEach((column) => {
+        tableDef.columns.forEach((column) => {
             const propValue = record[column.name]
 
             const formatedValue = formatColumnValue({
                 column,
                 value: propValue,
-                tableData: dbData[tableName],
+                tableData,
             })
 
-            const getMatchedRow = () => dbData[tableName]
+            const getMatchedRow = () => tableData
                 .find((row) => row[column.name] === formatedValue)
 
             if (valueIsUndefined(formatedValue)) {
@@ -65,7 +55,7 @@ const insertIntoTable = ({
             actualRow[column.name] = formatedValue
         })
 
-        dbData[tableName].push(actualRow)
+        tableData.push(actualRow)
 
         return rowId
     }

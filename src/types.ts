@@ -61,8 +61,13 @@ export type InsertInstruction = (
     data: Record<string, unknown> | Record<string, unknown>[]
 ) => Promise<unknown[]>;
 
+export type SelectInstruction = (
+    columns?: string,
+) => Promise<Record<string, unknown>[]>;
+
 type GenericQuery = {
     insert: InsertInstruction;
+    select: SelectInstruction;
 }
 
 export type KnexMock = {

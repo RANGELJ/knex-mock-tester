@@ -1,4 +1,4 @@
-import knexCreate from './knexCreate'
+import knexCreate from '../knexCreate'
 
 const buildTestKnex = async () => {
     const knex = knexCreate()
@@ -60,4 +60,26 @@ it('Should return the auto incremented id when inserting', async () => {
         updatedAt: 10,
     })
     expect(secondUserId).toBe(2)
+})
+
+it('Should be able to select', async () => {
+    const knex = await buildTestKnex()
+
+    await knex('users').insert([
+        {
+            name: 'Jorge',
+            createdAt: 10,
+            updatedAt: 10,
+        },
+        {
+            name: 'Margareth',
+            createdAt: 10,
+            updatedAt: 10,
+        },
+    ])
+
+    const rows = await knex('users')
+        .select('id')
+
+    expect(rows).toHaveLength(2)
 })
