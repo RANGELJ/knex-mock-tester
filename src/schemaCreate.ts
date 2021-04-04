@@ -1,8 +1,8 @@
 import tableBuilder from './tableBuilder'
-import { DbSchema, Table } from './types'
+import { DbSchema, TableDef } from './types'
 
 const schemaCreate = (): DbSchema => {
-    const tables: Record<string, Table> = {}
+    const tables: Record<string, TableDef> = {}
 
     const schema: DbSchema = {
         tables,

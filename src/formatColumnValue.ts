@@ -1,6 +1,6 @@
 import valueIsInteger from './typeAssertions/valueIsInteger'
 import { TableColumn, TableColumnType } from './types'
-import valueIsUndefined from './valueIsUnefined'
+import valueIsUndefined from './typeAssertions/valueIsUndefined'
 
 type Args = {
     column: TableColumn;

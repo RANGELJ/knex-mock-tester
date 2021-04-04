@@ -44,12 +44,12 @@ export type TableBuilder = {
     getColumns: () => TableColumn[];
 }
 
-export type Table = {
+export type TableDef = {
     columns: TableColumn[];
 }
 
 export type DbSchema = {
-    tables: Record<string, Table>;
+    tables: Record<string, TableDef>;
     createTable: (name: string, buildFunction: (builder: TableBuilder) => void) => Promise<void>;
 }
 
@@ -62,7 +62,7 @@ export type InsertInstruction = (
 ) => Promise<unknown[]>;
 
 export type SelectInstruction = (
-    columns?: string,
+    columns: string,
 ) => Promise<Record<string, unknown>[]>;
 
 type GenericQuery = {

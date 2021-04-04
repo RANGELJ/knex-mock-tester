@@ -1,9 +1,9 @@
-import { DbSchema, DbData, InsertInstruction, Table } from './types'
+import { TableDef } from './types'
 import formatColumnValue from './formatColumnValue'
-import valueIsUndefined from './valueIsUnefined'
+import valueIsUndefined from './typeAssertions/valueIsUndefined'
 
 type Args = {
-    tableDef: Table;
+    tableDef: TableDef;
     tableData: Record<string, unknown>[];
     newRecord: Record<string, unknown> | Record<string, unknown>[];
 }

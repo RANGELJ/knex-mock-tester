@@ -1,6 +1,7 @@
 import insertIntoTable from './insertIntoTable'
 import schemaCreate from './schemaCreate'
 import selectFromTable from './selectFromTable'
+import valueIsUndefined from './typeAssertions/valueIsUndefined'
 import { KnexMock, DbData } from './types'
 
 const knexCreate = (): KnexMock => {
@@ -20,7 +21,7 @@ const knexCreate = (): KnexMock => {
     const getTableDataByTableName = (tableName: string) => {
         getTableDefinitionByTableName(tableName)
 
-        if (!dbData[tableName]) {
+        if (valueIsUndefined(dbData[tableName])) {
             dbData[tableName] = []
         }
 
@@ -35,8 +36,10 @@ const knexCreate = (): KnexMock => {
                 tableData: getTableDataByTableName(tableName),
             })
         },
-        select: () => selectFromTable({
-            tableData: dbData[tableName],
+        select: (columnNames) => selectFromTable({
+            tableDef: getTableDefinitionByTableName(tableName),
+            tableData: getTableDataByTableName(tableName),
+            columnNames: [columnNames],
         }),
     })
 
