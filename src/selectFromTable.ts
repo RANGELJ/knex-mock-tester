@@ -1,5 +1,6 @@
 import { TableDef } from './types'
 import valueIsUndefined from './typeAssertions/valueIsUndefined'
+import getInvalidColumnsNameFromDef from './getInvalidColumnsNameFromDef'
 
 type Args = {
     tableDef: TableDef;
@@ -7,25 +8,29 @@ type Args = {
     tableData: Record<string, unknown>[];
 }
 
-const selectFromTable = async ({
+const selectFromTable = ({
     tableDef,
     tableData,
     columnNames,
-}: Args) => tableData.map((completeRow) => {
-    const formatedRow: Record<string, unknown> = {}
-
-    columnNames.forEach((columnName) => {
-        const columnDef = tableDef.columns
-            .find((columnDefSearch) => columnDefSearch.name === columnName)
-
-        if (valueIsUndefined(columnDef)) {
-            throw new Error(`Trying to select invalid column [${columnName}]`)
-        }
-
-        formatedRow[columnName] = completeRow[columnName]
+}: Args) => {
+    const invalidColumns = getInvalidColumnsNameFromDef({
+        columnNames,
+        columnsDefs: tableDef.columns,
     })
 
-    return formatedRow
-})
+    if (invalidColumns.length > 0) {
+        throw new Error(`Invalid column name: [${invalidColumns[0]}] in table: [${tableDef.name}]`)
+    }
+
+    return tableData.map((completeRow) => {
+        const formatedRow: Record<string, unknown> = {}
+    
+        columnNames.forEach((columnName) => {
+            formatedRow[columnName] = completeRow[columnName]
+        })
+    
+        return formatedRow
+    })
+}
 
 export default selectFromTable

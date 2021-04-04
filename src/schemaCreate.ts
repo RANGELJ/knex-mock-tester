@@ -15,7 +15,8 @@ const schemaCreate = (): DbSchema => {
             buildColumns(tabBuilder)
 
             tables[name] = {
-                columns: tabBuilder.getColumns()
+                columns: tabBuilder.getColumns(),
+                name,
             }
         },
     }

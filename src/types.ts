@@ -46,6 +46,7 @@ export type TableBuilder = {
 
 export type TableDef = {
     columns: TableColumn[];
+    name: string;
 }
 
 export type DbSchema = {
