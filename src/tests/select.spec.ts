@@ -61,3 +61,27 @@ it('Should fail when selecting non existing column', async () => {
 
     expect(catcher.mock.calls).toHaveLength(1)
 })
+
+it('Selects multiple columns', async () => {
+    const knex = await getKnexWithSchema()
+
+    await knex('users').insert([
+        {
+            name: 'Jorge',
+            createdAt: 10,
+            updatedAt: 10,
+        },
+        {
+            name: 'Margareth',
+            createdAt: 10,
+            updatedAt: 10,
+        },
+    ])
+
+    const rows = await knex('users').select('id', 'name')
+
+    expect(rows).toStrictEqual([
+        { id: 1, name: 'Jorge' },
+        { id: 2, name: 'Margareth' },
+    ])
+})

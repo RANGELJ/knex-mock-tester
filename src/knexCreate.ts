@@ -36,11 +36,11 @@ const knexCreate = (): KnexMock => {
                 tableData: getTableDataByTableName(tableName),
             })
         },
-        select: async (columnNames) => {
+        select: async (...columnNames) => {
             return selectFromTable({
                 tableDef: getTableDefinitionByTableName(tableName),
                 tableData: getTableDataByTableName(tableName),
-                columnNames: [columnNames],
+                columnNames,
             })
         },
     })

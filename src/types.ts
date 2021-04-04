@@ -63,7 +63,7 @@ export type InsertInstruction = (
 ) => Promise<unknown[]>;
 
 export type SelectInstruction = (
-    columns: string,
+    ...columns: string[]
 ) => Promise<Record<string, unknown>[]>;
 
 type GenericQuery = {
